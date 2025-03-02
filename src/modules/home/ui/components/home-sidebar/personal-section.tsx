@@ -1,7 +1,8 @@
 "use client";
 
-import { FlameIcon, HistoryIcon, HomeIcon, ListVideoIcon, PlaySquareIcon, ThumbsUpIcon } from "lucide-react";
 import Link from "next/link";
+import { useAuth, useClerk } from "@clerk/nextjs";
+import { HistoryIcon, ListVideoIcon, ThumbsUpIcon } from "lucide-react";
 
 import {
   SidebarGroup,
@@ -17,7 +18,7 @@ const items = [
     title: "History",
     url: "/playlists/history",
     icon: HistoryIcon,
-    auth: true
+    auth: true,
   },
   {
     title: "Liked Videos",
@@ -29,14 +30,17 @@ const items = [
     title: "All Playlists",
     url: "/playlists",
     icon: ListVideoIcon,
-    auth: true
+    auth: true,
   },
 ];
 
 export const PersonalSection = () => {
+  const clerk = useClerk();
+  const { isSignedIn } = useAuth();
+
   return (
     <SidebarGroup>
-        <SidebarGroupLabel>You</SidebarGroupLabel>
+      <SidebarGroupLabel>You</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
           {items.map((item) => (
@@ -45,7 +49,12 @@ export const PersonalSection = () => {
                 tooltip={item.title}
                 asChild
                 isActive={false}
-                onClick={() => {}}
+                onClick={(e) => {
+                  if (!isSignedIn && item.auth) {
+                    e.preventDefault();
+                    return clerk.openSignIn();
+                  }
+                }}
               >
                 <Link href={item.url} className="flex items-center gap-4">
                   <item.icon />
