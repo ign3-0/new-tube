@@ -14,3 +14,7 @@ export const config = {
     "/(api|trpc)(.*)",
   ],
 };
+
+
+// "dev:all": "concurrently \"bun run dev:webhook\" \"bun run dev\" ",
+// "dev:webhook": "ngrok http --url=yak-trusty-hopefully.ngrok-free.app 3000",
