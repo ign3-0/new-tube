@@ -1,9 +1,13 @@
-import { auth, clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import {
+  auth,
+  clerkMiddleware,
+  createRouteMatcher,
+} from "@clerk/nextjs/server";
 
-const isProtectedRoute = createRouteMatcher(["/protected"]);
+const isProtectedRoute = createRouteMatcher(["/Studio(.*)"]);
 
-export default clerkMiddleware(async(auth, req) => {
-    if (isProtectedRoute(req)) await auth.protect()
+export default clerkMiddleware(async (auth, req) => {
+  if (isProtectedRoute(req)) await auth.protect();
 });
 
 export const config = {
@@ -14,7 +18,6 @@ export const config = {
     "/(api|trpc)(.*)",
   ],
 };
-
 
 // "dev:all": "concurrently \"bun run dev:webhook\" \"bun run dev\" ",
 // "dev:webhook": "ngrok http --url=yak-trusty-hopefully.ngrok-free.app 3000",
