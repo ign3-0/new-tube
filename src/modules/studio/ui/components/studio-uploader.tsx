@@ -52,6 +52,7 @@ export const StudioUploader = ({
           className="text-sm"
           type="radial"
         />
+        <MuxUploaderProgress muxUploader={Uploader_Id} type="percentage" />
         <MuxUploaderProgress muxUploader={Uploader_Id} type="bar" />
       </MuxUploaderDrop>
     </div>
