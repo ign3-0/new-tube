@@ -77,7 +77,7 @@ export const POST = async (request: Request) => {
         return new Response("Missing Playback Id", { status: 400 });
       }
 
-      const tempThumbnailUrl = `https://image.mux.com/${playbackId}/thumbnail.jpg`;
+      const tempThumbnailUrl = `https://image.mux.com/${playbackId}/thumbnail.png`;
       const tempPreviewUrl = `https://image.mux.com/${playbackId}/animated.gif`;
       const duration = data.duration ? Math.round(data.duration * 1000) : 0;
 
