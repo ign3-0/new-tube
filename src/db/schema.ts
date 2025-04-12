@@ -1,5 +1,6 @@
 import { Many, relations } from "drizzle-orm";
 import {
+  foreignKey,
   integer,
   pgEnum,
   pgTable,
@@ -152,6 +153,7 @@ export const videoRelations = relations(videos, ({ one, many }) => ({
 
 export const comments = pgTable("comments", {
   id: uuid("id").primaryKey().defaultRandom(),
+  parentId: uuid("parent_id"),
   userId: uuid("user_id")
     .references(() => users.id, { onDelete: "cascade" })
     .notNull(),
@@ -162,7 +164,16 @@ export const comments = pgTable("comments", {
 
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
+}, (t) => {
+  return [
+    foreignKey({
+      columns: [t.parentId],
+      foreignColumns: [t.id],
+      name: "comment_parent_id_fkey"
+    })
+    .onDelete("cascade")
+  ]
+} );
 
 export const commentRelations = relations(comments, ({ one, many }) => ({
   user: one(users, {
@@ -173,7 +184,15 @@ export const commentRelations = relations(comments, ({ one, many }) => ({
     fields: [comments.videoId],
     references: [videos.id],
   }),
+  parent: one(comments, {
+    fields: [comments.parentId],
+    references: [comments.id],
+    relationName: "comments_parent_id_fkey",
+  }),
   reactions: many(commentReactions),
+  replies: many(comments, {
+    relationName: "comments_parent_id_fkey",
+  }),
 }));
 
 export const commentInsertSchema = createInsertSchema(comments);
