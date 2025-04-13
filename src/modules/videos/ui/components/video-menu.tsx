@@ -1,4 +1,5 @@
-import { toast } from "sonner";import {
+import { toast } from "sonner";
+import {
   ListPlusIcon,
   MoreVerticalIcon,
   ShareIcon,
@@ -19,13 +20,17 @@ interface VideoMenuProps {
   onRemove?: () => void;
 }
 
-export const VideoMenu = ({ videoId, variant, onRemove }: VideoMenuProps) => {
+export const VideoMenu = ({
+  videoId,
+  variant = "ghost",
+  onRemove,
+}: VideoMenuProps) => {
   const onShare = () => {
     const fullUrl = `${
       process.env.VERCEL_URL || "http://localhost:3000"
     }/videos/${videoId}`;
-    navigator.clipboard.writeText(fullUrl)
-    toast.success("Link Copied to Clipboard")
+    navigator.clipboard.writeText(fullUrl);
+    toast.success("Link Copied to Clipboard");
   };
 
   return (
