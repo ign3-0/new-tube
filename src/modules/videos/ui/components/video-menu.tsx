@@ -14,6 +14,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import { App_Url } from "@/constants";
+
 interface VideoMenuProps {
   videoId: string;
   variant?: "ghost" | "secondary";
@@ -26,7 +28,7 @@ export const VideoMenu = ({
   onRemove,
 }: VideoMenuProps) => {
   const onShare = () => {
-    const fullUrl = `${App_Url || "http://localhost:3000"}/videos/${videoId}`;
+    const fullUrl = `${App_Url}/videos/${videoId}`;
     navigator.clipboard.writeText(fullUrl);
     toast.success("Link Copied to Clipboard");
   };

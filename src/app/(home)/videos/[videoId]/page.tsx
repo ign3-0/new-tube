@@ -4,6 +4,8 @@ import { Default_Limit } from "@/constants";
 
 import { VideoView } from "@/modules/videos/ui/views/video-view";
 
+export const dynamic = 'force-dynamic'
+
 interface PageProps {
   params: Promise<{ videoId: string }>;
 }

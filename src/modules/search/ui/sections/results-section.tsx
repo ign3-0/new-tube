@@ -1,5 +1,8 @@
 "use client";
 
+import { Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
+
 import { Default_Limit } from "@/constants";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { trpc } from "@/trpc/client";
@@ -19,7 +22,38 @@ interface ResultsSectionProps {
   categoryId: string | undefined;
 }
 
-export const ResultsSection = ({ query, categoryId }: ResultsSectionProps) => {
+export const ResultsSection = (props: ResultsSectionProps) => {
+  return (
+    <Suspense
+      key={`${props.query} - ${props.categoryId}`}
+      fallback={<ResultsSectionSkeleton />}
+    >
+      <ErrorBoundary fallback={<p>Error</p>}>
+        <ResultsSectionSuspense {...props} />
+      </ErrorBoundary>
+    </Suspense>
+  );
+};
+
+const ResultsSectionSkeleton = () => {
+  return (
+    <div className="">
+      <div className="hidden flex-col gap-4 md:flex">
+        {Array.from({ length: 5 }).map((_, index) => (
+          <VideoRowCardSkeleton key={index} />
+        ))}
+      </div>
+      <div className="flex flex-col gap-4 p-4 gap-y-10 pt-6 md:hidden">
+        {" "}
+        {Array.from({ length: 5 }).map((_, index) => (
+          <VideoGridCardSkeleton key={index} />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const ResultsSectionSuspense = ({ query, categoryId }: ResultsSectionProps) => {
   const isMobile = useIsMobile();
 
   const [results, resultQuery] = trpc.search.getMany.useSuspenseInfiniteQuery(
