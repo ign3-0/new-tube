@@ -55,6 +55,7 @@ import { VideoPlayer } from "@/modules/videos/ui/components/video-player";
 import { Thumbnail_Fallback } from "@/modules/videos/constants";
 
 import { ThumbnailUploadModal } from "../components/thumbnail-upload-modal";
+import { App_Url } from "@/constants";
 // import { ThumbnailGenerateModal } from "../components/thumbnail-generate-modal";
 
 interface FormSectionProps {
@@ -226,9 +227,7 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
     update.mutate(data);
   };
 
-  const fullUrl = `${
-    process.env.VERCEL_URL || "http://localhost:3000"
-  }/videos/${videoId}`;
+  const fullUrl = `${App_Url || "http://localhost:3000"}/videos/${videoId}`;
   const [isCopied, setIsCopied] = useState(false);
 
   const onCopy = async () => {
