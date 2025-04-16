@@ -30,8 +30,8 @@ export const VideoReactions = ({
     onSuccess: () => {
       utils.videos.getOne.invalidate({
         id: videoId,
-        // todo: Invalidate Liked Playlist
       });
+      utils.playlists.getLiked.invalidate();
     },
     onError: (error) => {
       toast.error("Something went wrong");
@@ -45,8 +45,8 @@ export const VideoReactions = ({
     onSuccess: () => {
       utils.videos.getOne.invalidate({
         id: videoId,
-        // todo: Invalidate Liked Playlist
       });
+      utils.playlists.getLiked.invalidate();
     },
     onError: (error) => {
       toast.error("Something went wrong");
