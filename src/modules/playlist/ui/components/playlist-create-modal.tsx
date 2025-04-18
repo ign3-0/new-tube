@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { trpc } from "@/trpc/client";
 import { ResponsiveModal } from "@/components/responsive-modal";
-import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,35 +16,33 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-interface ThumbnailGenerateModalProps {
-  videoId: string;
+interface PlaylistCreateModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
 const formSchema = z.object({
-  prompt: z.string().min(10),
+  name: z.string().min(1),
 });
 
-export const ThumbnailGenerateModal = ({
-  videoId,
+export const PlaylistCreateModal = ({
   open,
   onOpenChange,
-}: ThumbnailGenerateModalProps) => {
+}: PlaylistCreateModalProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      prompt: "",
+      name: "",
     },
   });
 
-  const generateThumbnail = trpc.videos.generateThumbnail.useMutation({
+  const utils = trpc.useUtils()
+  const create = trpc.playlists.create.useMutation({
     onSuccess: () => {
-      toast.success("Background Job Started", {
-        description: "This may take sometime",
-      });
-      form.reset()
-      onOpenChange(false)
+      utils.playlists.getMany.invalidate()
+      toast.success("Playlist Created");
+      form.reset();
+      onOpenChange(false);
     },
     onError: () => {
       toast.error("Something went wrong");
@@ -52,15 +50,12 @@ export const ThumbnailGenerateModal = ({
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    // generateThumbnail.mutate({
-    //     prompt: values.prompt,
-    //     id: videoId
-    // })
+    create.mutate(values)
   };
 
   return (
     <ResponsiveModal
-      title="Upload a Thumbnail"
+      title="Create a Playlist"
       open={open}
       onOpenChange={onOpenChange}
     >
@@ -71,17 +66,14 @@ export const ThumbnailGenerateModal = ({
         >
           <FormField
             control={form.control}
-            name="prompt"
+            name="name"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Prompt</FormLabel>
                 <FormControl>
-                  <Textarea
+                  <Input
                     {...field}
-                    className="resize-none"
-                    cols={30}
-                    rows={5}
-                    placeholder="A descripton of wanted thumbnail"
+                    placeholder="My Favourite Videos"
                   />
                 </FormControl>
                 <FormMessage />
@@ -89,7 +81,9 @@ export const ThumbnailGenerateModal = ({
             )}
           />
           <div className="flex justify-end">
-            <Button disabled={generateThumbnail.isPending} type="submit">Generate</Button>
+            <Button disabled={create.isPending} type="submit">
+              Create
+            </Button>
           </div>
         </form>
       </Form>
